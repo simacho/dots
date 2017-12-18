@@ -1,0 +1,87 @@
+#
+# .zshrc_mine
+#
+
+#
+# Set PROXY
+#
+
+# export HTTP_PROXY=http://proxy.konami:8080/
+
+#
+# Set PATH
+#
+export PATH=$PATH:/usr/local/bin
+export PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin:.:~/bin
+export PATH=/usr/local/bin:/usr/X11R6/bin:/usr/bin:/bin:$PATH
+
+#
+# Set ALIAS
+#
+
+alias st="cygstart.exe"
+alias ffx="firefox.exe &"
+alias em="runemacs.exe &"
+alias cdtrunk="cd /cygdrive/c/develop/repo/"
+alias cdscrpt="cd /cygdrive/c/develop/repo/pzl00/Assets/scripts"
+alias cdrsc="cd /cygdrive/c/develop/repo/pzl00/Assets/Resources"
+alias cdtool="cd /cygdrive/c/develop/repo/tool"
+
+# シェル関数を定義する
+function open-files-with-percol() {
+   # コマンドラインに percol で選択した文字列を代入して、結果はログに保存
+   local res
+   local resfull
+   local sep='============================================================='
+   local updir='../'
+   res=$(cat <(echo $updir) <(ls) <(echo $sep) <(cat ~/.logpercol) | percol --match-method migemo)
+   resfull=$(cygpath -a $res)
+   cat <(echo $resfull) ~/.logpercol | sort | uniq > ~/.logpercol
+   # フォルダならおりる
+   if [ -d $res ]; then
+    echo "to $res"
+    cd $res
+    zle reset-prompt
+   else
+   # ファイルならば履歴に追加
+    BUFFER="$BUFFER$res"
+    # カーソルの位置をコマンドラインの末尾に移動
+    CURSOR=$#BUFFER
+   fi
+   # percol による出力をクリアする
+   zle clear-screen
+}
+zle -N open-files-with-percol
+bindkey '^ ' open-files-with-percol
+bindkey '^j' open-files-with-percol
+
+function run-command-with-percol_rireki() {
+   # コマンドラインに percol で選択した文字列を代入する
+   local res
+   res=$(history | percol --match-method migemo)
+   #$(| percol | perl -pe 's/\n/ /g' )"
+   BUFFER="$BUFFER$res"
+# カーソルの位置をコマンドラインの末尾に移動
+   CURSOR=$#BUFFER
+   # percol による出力をクリアする
+   zle clear-screen
+}
+zle -N run-command-with-percol_rireki
+bindkey '^r' run-command-with-percol_rireki
+
+
+function paste-clip-prompt() {
+   local res
+   res=$(cat /dev/clipboard)
+   BUFFER="$BUFFER$res"
+   CURSOR=$#BUFFER
+}
+zle -N paste-clip-prompt
+bindkey '^y' paste-clip-prompt
+
+
+
+# 初回シェル時のみ tmux実行
+if [ $SHLVL = 1 ]; then
+  tmux
+fi
