@@ -28,7 +28,7 @@ endif
 " colorscheme
 " colorscheme tender
 " colorscheme molokai
-colorscheme seti 
+colorscheme  darkblue
 
 set t_Co=256
 set background=dark
