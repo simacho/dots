@@ -14,7 +14,6 @@ call dein#begin(expand('dein'))
 
 call dein#add('Shougo/dein.vim')
 call dein#add('Shougo/vimproc.vim', {'build': 'make'})
-
 call dein#add('Shougo/unite.vim')
 call dein#add('Shougo/vimfiler')
 call dein#add('Shougo/neocomplete.vim')
@@ -28,6 +27,8 @@ call dein#add('rakr/vim-one')
 call dein#add('trusktr/seti.vim')
 call dein#add('tpope/vim-markdown')
 call dein#add('itchyny/lightline.vim') " 情報を見やすく
+call dein#add('thinca/vim-ref')
+
 
 call dein#end()
 
@@ -56,6 +57,13 @@ set nocursorline
 " 挿入モードの時のみ、カーソル行をハイライトする
 autocmd InsertEnter,InsertLeave * set cursorline!
 
+" タブインデント関連
+set expandtab "タブ入力を複数の空白入力に置き換える
+set tabstop=4 "画面上でタブ文字が占める幅
+set shiftwidth=4 "自動インデントでずれる幅
+set softtabstop=4 "連続した空白に対してタブキーやバックスペースキーでカーソルが動く幅
+set autoindent "改行時に前の行のインデントを継続する
+set smartindent "改行時に入力された行の末尾に合わせて次の行のインデントを増減する
 "----------------------------------------------------------
 " neocomplete・neosnippetの設定
 "----------------------------------------------------------
@@ -162,3 +170,6 @@ let howm_dir             = '~/howm/'
 let howm_filename        = '%Y/%m/%Y-%m-%d-%H%M%S.txt'
 let howm_fileencoding    = 'utf-8'
 let howm_fileformat      = 'unix'
+
+
+let g:ref_refe_cmd = 'c:/cygwin64/home/simazaki/bin/refe' "refeコマンドのパス
