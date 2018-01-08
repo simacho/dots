@@ -26,9 +26,10 @@ call dein#add('tomasr/molokai')
 call dein#add('rakr/vim-one')
 call dein#add('trusktr/seti.vim')
 call dein#add('tpope/vim-markdown')
-call dein#add('itchyny/lightline.vim') " 情報を見やすく
+call dein#add('itchyny/lightline.vim') 
+call dein#add('kien/ctrlp.vim')
+call dein#add('gabrielelana/vim-markdown')
 call dein#add('thinca/vim-ref')
-
 
 call dein#end()
 
@@ -64,6 +65,14 @@ set shiftwidth=4 "自動インデントでずれる幅
 set softtabstop=4 "連続した空白に対してタブキーやバックスペースキーでカーソルが動く幅
 set autoindent "改行時に前の行のインデントを継続する
 set smartindent "改行時に入力された行の末尾に合わせて次の行のインデントを増減する
+
+set incsearch
+if has("migemo")
+    set migemo
+    set migemodict=$VIM\dict\migemo-dict
+    nnoremap / g/
+endif
+
 "----------------------------------------------------------
 " neocomplete・neosnippetの設定
 "----------------------------------------------------------
