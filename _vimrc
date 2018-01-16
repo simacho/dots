@@ -1,7 +1,8 @@
 
 set shellslash
 
-" set autochdir
+" set current dir
+cd $VIM
 
 let g:vimproc#download_windows_dll = 1
 
@@ -72,6 +73,11 @@ if has("migemo")
     set migemodict=$VIM\dict\migemo-dict
     nnoremap / g/
 endif
+
+" カレントバッファのパス展開ショートカット
+cnoremap <expr> // getcmdtype()==':' ? expand('%:p:h').'/':'//'
+
+
 
 "----------------------------------------------------------
 " neocomplete・neosnippetの設定
