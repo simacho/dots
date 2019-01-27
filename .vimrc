@@ -4,8 +4,11 @@ if &compatible
 endif
 set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
 
-call dein#begin(expand('dein'))
-
+if dein#load_state('~/.cache/dein')
+ call dein#begin('~/.cache/dein')
+ 
+call dein#add('~/.cache/dein')
+call dein#add('Shougo/deoplete.nvim')
 call dein#add('Shougo/dein.vim')
 call dein#add('Shougo/vimproc.vim', {'build': 'make'})
 call dein#add('Shougo/unite.vim')
@@ -16,7 +19,7 @@ call dein#add('Shougo/neosnippet.vim')
 call dein#add('Shougo/neosnippet-snippets')
 call dein#add('fuenor/qfixhowm')
 call dein#add('jacoborus/tender.vim')
-call dein#add('tomasr/molokai')
+" #call dein#add('tomasr/molokai')
 call dein#add('rakr/vim-one')
 call dein#add('trusktr/seti.vim')
 call dein#add('tpope/vim-markdown')
@@ -24,9 +27,22 @@ call dein#add('itchyny/lightline.vim')
 call dein#add('kien/ctrlp.vim')
 call dein#add('gabrielelana/vim-markdown')
 call dein#add('thinca/vim-ref')
+call dein#add('othree/html5.vim')
+call dein#add('tpope/vim-rails')
+call dein#add('tpope/vim-surround')
+call dein#add('jremmen/vim-ripgrep')
+call dein#add('posva/vim-vue')
+
+if !has('nvim')
+ call dein#add('roxma/nvim-yarp')
+ call dein#add('roxma/vim-hug-neovim-rpc')
+endif
+
+call dein#add('fortes/vim-escuro')
 
 call dein#end()
-
+call dein#save_state()
+endif
 " 未インストールのプラグインをインストール
 if dein#check_install()
     call dein#install()
@@ -172,4 +188,13 @@ au BufRead,BufNewFile *.md set filetype=markdown
 
 
 
+" html.erb 有効にする
+let g:html5_event_handler_attributes_complete = 1
+let g:html5_rdfa_attributes_complete = 1
+let g:html5_microdata_attributes_complete = 1
+let g:html5_aria_attributes_complete = 1
+
+
+" inident on
+filetype plugin indent on
 
