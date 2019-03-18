@@ -31,7 +31,12 @@ call dein#add('othree/html5.vim')
 call dein#add('tpope/vim-rails')
 call dein#add('tpope/vim-surround')
 call dein#add('jremmen/vim-ripgrep')
-call dein#add('posva/vim-vue')
+call dein#add('posva/vim-vue') 
+call dein#add('pangloss/vim-javascript')
+call dein#add('othree/yajs.vim')
+call dein#add('mxw/vim-jsx')
+call dein#add('cohama/lexima.vim')
+
 
 if !has('nvim')
  call dein#add('roxma/nvim-yarp')
@@ -86,30 +91,143 @@ endif
 " カレントバッファのパス展開ショートカット
 cnoremap <expr> // getcmdtype()==':' ? expand('%:p:h').'/':'//'
 
+set ignorecase
 
 
 "----------------------------------------------------------
 " neocomplete・neosnippetの設定
 "----------------------------------------------------------
-" Vim起動時にneocompleteを有効にする
+" Note: This option must be set in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
+" Disable AutoComplPop.
+let g:acp_enableAtStartup = 0
+" Use neocomplete.
 let g:neocomplete#enable_at_startup = 1
-" smartcase有効化. 大文字が入力されるまで大文字小文字の区別を無視する
+" Use smartcase.
 let g:neocomplete#enable_smart_case = 1
-" 3文字以上の単語に対して補完を有効にする
-let g:neocomplete#min_keyword_length = 3
-" 区切り文字まで補完する
-let g:neocomplete#enable_auto_delimiter = 1
-" 1文字目の入力から補完のポップアップを表示
-let g:neocomplete#auto_completion_start_length = 1
-" バックスペースで補完のポップアップを閉じる
-inoremap <expr><BS> neocomplete#smart_close_popup()."<C-h>"
+" Set minimum syntax keyword length.
+let g:neocomplete#sources#syntax#min_keyword_length = 3
 
-" エンターキーで補完候補の確定. スニペットの展開もエンターキーで確定・・・・・・②
-imap <expr><CR> neosnippet#expandable() ? "<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? "<C-y>" : "<CR>"
-" タブキーで補完候補の選択. スニペット内のジャンプもタブキーでジャンプ・・・・・・③
-imap <expr><TAB> pumvisible() ? "<C-n>" : neosnippet#jumpable() ? "<Plug>(neosnippet_expand_or_jump)" : "<TAB>"
+" Define dictionary.
+let g:neocomplete#sources#dictionary#dictionaries = {
+    \ 'default' : '',
+    \ 'vimshell' : $HOME.'/.vimshell_hist',
+    \ 'scheme' : $HOME.'/.gosh_completions'
+        \ }
 
+" Define keyword.
+if !exists('g:neocomplete#keyword_patterns')
+    let g:neocomplete#keyword_patterns = {}
+endif
+let g:neocomplete#keyword_patterns['default'] = '\h\w*'
 
+" Plugin key-mappings.
+inoremap <expr><C-g>     neocomplete#undo_completion()
+inoremap <expr><C-l>     neocomplete#complete_common_string()
+
+" Recommended key-mappings.
+" <CR>: close popup and save indent.
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+function! s:my_cr_function()
+  return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
+  " For no inserting <CR> key.
+  "return pumvisible() ? "\<C-y>" : "\<CR>"
+endfunction
+" <TAB>: completion.
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+" <C-h>, <BS>: close popup and delete backword char.
+inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+" Close popup by <Space>.
+"inoremap <expr><Space> pumvisible() ? "\<C-y>" : "\<Space>"
+
+" AutoComplPop like behavior.
+"let g:neocomplete#enable_auto_select = 1
+
+" Shell like behavior(not recommended).
+"set completeopt+=longest
+"let g:neocomplete#enable_auto_select = 1
+"let g:neocomplete#disable_auto_complete = 1
+"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
+
+" Enable omni completion.
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+
+" Enable heavy omni completion.
+if !exists('g:neocomplete#sources#omni#input_patterns')
+  let g:neocomplete#sources#omni#input_patterns = {}
+endif
+"let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+"let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+"let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+
+" For perlomni.vim setting.
+" https://github.com/c9s/perlomni.vim
+let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+
+"" Vim起動時にneocompleteを有効にする
+"let g:neocomplete#enable_at_startup = 1
+"" smartcase有効化. 大文字が入力されるまで大文字小文字の区別を無視する
+"let g:neocomplete#enable_smart_case = 1
+"" 3文字以上の単語に対して補完を有効にする
+"let g:neocomplete#min_keyword_length = 3
+"" 区切り文字まで補完する
+"let g:neocomplete#enable_auto_delimiter = 1
+"" 1文字目の入力から補完のポップアップを表示
+"let g:neocomplete#auto_completion_start_length = 1
+"" バックスペースで補完のポップアップを閉じる
+"inoremap <expr><BS> neocomplete#smart_close_popup()."<C-h>"
+"
+"
+"" Plugin key-mappings.
+"inoremap <expr><C-g>     neocomplete#undo_completion()
+"inoremap <expr><C-l>     neocomplete#complete_common_string()
+"
+"" エンターキーで補完候補の確定. スニペットの展開もエンターキーで確定・・・・・・②
+"imap <expr><CR> neosnippet#expandable() ? "<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? "<C-y>" : "<CR>"
+"" タブキーで補完候補の選択. スニペット内のジャンプもタブキーでジャンプ・・・・・・③
+"imap <expr><TAB> pumvisible() ? "<C-n>" : neosnippet#jumpable() ? "<Plug>(neosnippet_expand_or_jump)" : "<TAB>"
+"
+"highlight Pmenu ctermbg=4
+"highlight PmenuSel ctermbg=1
+"highlight PMenuSbar ctermbg=4
+"
+"" 補完ウィンドウの設定
+"set completeopt=menuone
+"" 補完ウィンドウの設定
+"set completeopt=menuone
+"" rsenseでの自動補完機能を有効化
+"let g:rsenseUseOmniFunc = 1
+"" let g:rsenseHome = '/usr/local/lib/rsense-0.3'
+"" auto-ctagsを使ってファイル保存時にtagsファイルを更新
+"let g:auto_ctags = 1
+"" 起動時に有効化
+"let g:neocomplcache_enable_at_startup = 1
+"" 大文字が入力されるまで大文字小文字の区別を無視する
+"let g:neocomplcache_enable_smart_case = 1
+"" _(アンダースコア)区切りの補完を有効化
+"let g:neocomplcache_enable_underbar_completion = 1
+"let g:neocomplcache_enable_camel_case_completion  =  1
+"" 最初の補完候補を選択状態にする
+"let g:neocomplcache_enable_auto_select = 1
+"" ポップアップメニューで表示される候補の数
+"let g:neocomplcache_max_list = 20
+"" シンタックスをキャッシュするときの最小文字長
+"let g:neocomplcache_min_syntax_length = 3
+"" 補完の設定
+"autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
+"if !exists('g:neocomplete#force_omni_input_patterns')
+"  let g:neocomplete#force_omni_input_patterns = {}
+"  endif
+"  let g:neocomplete#force_omni_input_patterns.ruby = '[^.*\t]\.\w*\|\h\w*::'
+"  if !exists('g:neocomplete#keyword_patterns')
+"          let g:neocomplete#keyword_patterns = {}
+"          endif
+"          let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+"
 "------------------------------------
 " unite.vim
 "------------------------------------
@@ -198,3 +316,29 @@ let g:html5_aria_attributes_complete = 1
 " inident on
 filetype plugin indent on
 
+" for MOZC
+function! ImInActivate()
+      call system('fcitx-remote -c')
+endfunction
+inoremap <silent> <C-[> <ESC>:call ImInActivate()<CR>
+
+
+autocmd FileType html :set filetype=xhtml
+autocmd Filetype html :set omnifunc=htmlcomplete#CompleteTags
+autocmd Filetype php  :set omnifunc=phpcomplete#CompletePHP
+
+function InsertTabWrapper()
+    if pumvisible()
+        return "\<c-n>"
+    endif
+    let col = col('.') - 1
+    if !col || getline('.')[col - 1] !~ '\k\|<\|/'
+        return "\<tab>"
+    elseif exists('&omnifunc') && &omnifunc == ''
+        return "\<c-n>"
+    else
+        return "\<c-x>\<c-o>"
+    endif
+endfunction
+
+inoremap <tab> <c-r>=InsertTabWrapper()<cr>
