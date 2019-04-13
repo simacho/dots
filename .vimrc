@@ -36,6 +36,7 @@ call dein#add('pangloss/vim-javascript')
 call dein#add('othree/yajs.vim')
 call dein#add('mxw/vim-jsx')
 call dein#add('cohama/lexima.vim')
+call dein#add('vim-scripts/AutoComplPop')
 
 
 if !has('nvim')
@@ -317,11 +318,10 @@ let g:html5_aria_attributes_complete = 1
 filetype plugin indent on
 
 " for MOZC
-function! ImInActivate()
-      call system('fcitx-remote -c')
-endfunction
-inoremap <silent> <C-[> <ESC>:call ImInActivate()<CR>
-
+"function! ImInActivate()
+"      call system('fcitx-remote -c')
+"endfunction
+"inoremap <ESC> <ESC>:call ImInActivate()<CR><ESC>
 
 autocmd FileType html :set filetype=xhtml
 autocmd Filetype html :set omnifunc=htmlcomplete#CompleteTags
@@ -334,11 +334,17 @@ function InsertTabWrapper()
     let col = col('.') - 1
     if !col || getline('.')[col - 1] !~ '\k\|<\|/'
         return "\<tab>"
-    elseif exists('&omnifunc') && &omnifunc == ''
-        return "\<c-n>"
     else
-        return "\<c-x>\<c-o>"
+        return "\<c-n>"
+"    elseif exists('&omnifunc') && &omnifunc == ''
+"        return "\<c-n>"
+"    else
+"        return "\<c-x>\<c-o>"
     endif
 endfunction
 
 inoremap <tab> <c-r>=InsertTabWrapper()<cr>
+inoremap <C-tab> <c-x><c-o>
+
+
+
