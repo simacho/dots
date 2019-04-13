@@ -11,6 +11,10 @@
 #
 # Set PATH
 #
+# rbenv
+PATH="$HOME/.rbenv/shims:$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+
 export PATH=$PATH:/usr/local/bin
 export PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin:.:~/bin
 export PATH=/usr/local/bin:/usr/X11R6/bin:/usr/bin:/bin:$PATH
@@ -19,13 +23,9 @@ export PATH=/usr/local/bin:/usr/X11R6/bin:/usr/bin:/bin:$PATH
 # Set ALIAS
 #
 
-alias st="cygstart.exe"
 alias ffx="firefox.exe &"
-alias em="runemacs.exe &"
-alias cdtrunk="cd /cygdrive/c/develop/repo/"
-alias cdscrpt="cd /cygdrive/c/develop/repo/pzl00/Assets/scripts"
-alias cdrsc="cd /cygdrive/c/develop/repo/pzl00/Assets/Resources"
-alias cdtool="cd /cygdrive/c/develop/repo/tool"
+alias cdsample="cd ~/react-tutorial/tuto1/test-bootstrap"
+
 
 # シェル関数を定義する
 function open-files-with-percol() {
@@ -83,5 +83,5 @@ bindkey '^y' paste-clip-prompt
 
 # 初回シェル時のみ tmux実行
 if [ $SHLVL = 1 ]; then
-  tmux
+  tmux new-session \; source-file ~/tmux/tmux.startup
 fi
