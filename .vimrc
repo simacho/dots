@@ -35,7 +35,7 @@ call dein#add('posva/vim-vue')
 call dein#add('pangloss/vim-javascript')
 call dein#add('othree/yajs.vim')
 call dein#add('mxw/vim-jsx')
-call dein#add('cohama/lexima.vim')
+" call dein#add('cohama/lexima.vim')
 call dein#add('vim-scripts/AutoComplPop')
 
 
@@ -345,6 +345,11 @@ endfunction
 
 inoremap <tab> <c-r>=InsertTabWrapper()<cr>
 inoremap <C-tab> <c-x><c-o>
+
+function! ImInActivate()
+    call system('fcitx-remote -c')
+endfunction
+inoremap <silent> <C-[> <ESC>:call ImInActivate()<CR>
 
 
 
